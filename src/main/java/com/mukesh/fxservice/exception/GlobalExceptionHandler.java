@@ -16,9 +16,6 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ==============================
-    // 1️⃣ Business Exception - 404
-    // ==============================
     @ExceptionHandler(RateNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleRateNotFound(
             RateNotFoundException ex,
@@ -35,9 +32,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    // ==============================
-    // 2️⃣ Bean Validation Errors - 400
-    // ==============================
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex,
@@ -59,9 +54,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    // ==============================
-    // 3️⃣ Constraint Violations (@RequestParam) - 400
-    // ==============================
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolation(
             ConstraintViolationException ex,
@@ -78,9 +71,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    // ==============================
-    // 4️⃣ Missing Request Parameter - 400
-    // ==============================
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingParam(
             MissingServletRequestParameterException ex,
@@ -97,9 +88,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    // ==============================
-    // 5️⃣ Type Mismatch - 400
-    // ==============================
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(
             MethodArgumentTypeMismatchException ex,
@@ -116,9 +105,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    // ==============================
-    // 6️⃣ Fallback - 500
-    // ==============================
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex,

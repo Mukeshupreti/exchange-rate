@@ -24,9 +24,7 @@ public class ExchangeRateScheduler {
     public void refreshRates() {
 
         log.info("Starting scheduled FX refresh");
-
         loader.loadAllSupportedCurrencies();
-
         log.info("Completed scheduled FX refresh");
     }
 }

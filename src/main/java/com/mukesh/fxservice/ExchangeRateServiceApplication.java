@@ -10,9 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableConfigurationProperties(CurrencyProperties.class)
 @EnableScheduling
 public class ExchangeRateServiceApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(ExchangeRateServiceApplication.class, args);
     }
-
 }

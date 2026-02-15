@@ -38,13 +38,14 @@ public class ExchangeRateLoaderService {
 
     @Transactional
     public List<ExchangeRate> fetchAndStoreRates(String currency) {
-        log.info("fetching exchange data for currency :{}",currency);
+        log.info("fetching exchange data for currency :{}", currency);
         String csvData = client.fetchExchangeRatesCsv(currency);
         List<ExchangeRate> rates = parseCsv(currency, csvData);
         repository.saveAll(rates);
-        log.info("fetch done for currency :{}",currency);
+        log.info("fetch done for currency :{}", currency);
         return rates;
     }
+
     public void loadAllSupportedCurrencies() {
         currencyProperties.getSupportedCurrencies()
                 .forEach(this::fetchAndStoreRates);

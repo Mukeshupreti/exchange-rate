@@ -10,17 +10,18 @@ import static org.mockito.Mockito.*;
 
 class ExchangeRateServiceTest {
 
+    CurrencyProperties currencyProperties;
     private ExchangeRateRepository repository;
     private BundesbankClient client;
     private ExchangeRateService service;
     private ExchangeRateLoaderService loader;
-    CurrencyProperties currencyProperties;
+
     @BeforeEach
     void setup() {
         repository = mock(ExchangeRateRepository.class);
         client = mock(BundesbankClient.class);
-        currencyProperties=mock(CurrencyProperties.class);
-        service = new ExchangeRateService(repository, loader,currencyProperties);
+        currencyProperties = mock(CurrencyProperties.class);
+        service = new ExchangeRateService(repository, loader, currencyProperties);
     }
 
     @Test

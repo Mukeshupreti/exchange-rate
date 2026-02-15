@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,15 +30,11 @@ public class ExchangeRateService {
     private final ExchangeRateLoaderService loader;
     private final CurrencyProperties currencyProperties;
 
-    public ExchangeRateService(ExchangeRateRepository exchangeRateRepository, ExchangeRateLoaderService loader,CurrencyProperties currencyProperties) {
+    public ExchangeRateService(ExchangeRateRepository exchangeRateRepository, ExchangeRateLoaderService loader, CurrencyProperties currencyProperties) {
         this.exchangeRateRepository = exchangeRateRepository;
         this.loader = loader;
-        this.currencyProperties= currencyProperties;
+        this.currencyProperties = currencyProperties;
     }
-
-    // ==============================
-    // Fetch from Bundesbank and store
-    // ==============================
 
     @CircuitBreaker(name = "bundesbank", fallbackMethod = "fallbackRates")
     @Retry(name = "bundesbank")
@@ -61,17 +57,9 @@ public class ExchangeRateService {
     }
 
 
-    // ==============================
-    // Get Available Currencies
-    // ==============================
-
     public List<String> getAvailableCurrencies() {
         return currencyProperties.getSupportedCurrencies();
     }
-
-    // ==============================
-    // Get rates by date
-    // ==============================
 
     public Page<ExchangeRateResponse> getAllRates(Pageable pageable) {
 
@@ -93,11 +81,6 @@ public class ExchangeRateService {
         return page.map(this::toResponse);
     }
 
-
-
-    // ==============================
-    // Get specific rate
-    // ==============================
 
     public ExchangeRate getRate(String inputCurrency, LocalDate date) {
         String currency = inputCurrency.toUpperCase().trim();
@@ -125,10 +108,6 @@ public class ExchangeRateService {
                 });
     }
 
-
-    // ==============================
-    // Convert to EUR
-    // ==============================
     public ConversionResponse convert(String inputCurrency,
                                       BigDecimal amount,
                                       LocalDate date) {
@@ -161,6 +140,7 @@ public class ExchangeRateService {
                 rate.getRateDate()
         );
     }
+
     public Page<ExchangeRateResponse> getRatesByDate(LocalDate date, Pageable pageable) {
 
         Page<ExchangeRate> page = exchangeRateRepository.findByRateDate(date, pageable);

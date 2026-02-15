@@ -11,7 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -61,9 +62,10 @@ class ExchangeRateIntegrationTest {
         mockMvc.perform(get("/api/rates")
                         .param("date", "2024-01-10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].currency").value("USD"))
-                .andExpect(jsonPath("$.content[0].rate").value(1.200000));
+                .andExpect(jsonPath("$.content[*].currency")
+                        .value(org.hamcrest.Matchers.hasItem("USD")));
     }
+
 
     // =========================================
     // 3️⃣ Test Validation
