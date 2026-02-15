@@ -15,8 +15,7 @@ public class ExchangeRateScheduler {
 
     private final ExchangeRateLoaderService loader;
 
-    public ExchangeRateScheduler(CurrencyProperties currencyProperties,
-                                 ExchangeRateLoaderService loader) {
+    public ExchangeRateScheduler(ExchangeRateLoaderService loader) {
         this.loader = loader;
     }
 

@@ -65,6 +65,7 @@ public class ExchangeRateController {
 
             @RequestParam
             @NotNull(message = "Date must not be null")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date
     ) {
         return service.convert(currency, amount, date);
