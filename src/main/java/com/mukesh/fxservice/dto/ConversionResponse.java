@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public record ConversionResponse(
         String currency,
-        BigDecimal originalAmount,
+        BigDecimal amount,
         BigDecimal rate,
         BigDecimal convertedAmount,
         LocalDate rateDate,

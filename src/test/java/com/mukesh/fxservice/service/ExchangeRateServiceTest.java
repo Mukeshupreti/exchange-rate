@@ -21,6 +21,7 @@ class ExchangeRateServiceTest {
         repository = mock(ExchangeRateRepository.class);
         client = mock(BundesbankClient.class);
         currencyProperties = mock(CurrencyProperties.class);
+        loader = new ExchangeRateLoaderService(repository, client, currencyProperties);
         service = new ExchangeRateService(repository, loader, currencyProperties);
     }
 

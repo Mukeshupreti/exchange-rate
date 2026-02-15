@@ -1,11 +1,18 @@
 package com.mukesh.fxservice.external;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 public class BundesbankClient {
+
+    private static final Logger log = LoggerFactory.getLogger(BundesbankClient.class);
 
     private final RestTemplate restTemplate;
     private final String baseUrl;
@@ -21,6 +28,8 @@ public class BundesbankClient {
         this.formatSuffix = formatSuffix;
     }
 
+    @RateLimiter(name = "bundesbank")
+    @Retry(name = "bundesbank")
     public String fetchExchangeRatesCsv(String currency) {
 
         String url = String.format(
@@ -30,6 +39,17 @@ public class BundesbankClient {
                 formatSuffix
         );
 
-        return restTemplate.getForObject(url, String.class);
+        log.debug("Requesting Bundesbank CSV: {}", url);
+
+        try {
+            String resp = restTemplate.getForObject(url, String.class);
+            if (resp == null) {
+                throw new RestClientException("Empty response from Bundesbank for url=" + url);
+            }
+            return resp;
+        } catch (RestClientException ex) {
+            log.error("Error fetching data from Bundesbank: {}", ex.getMessage());
+            throw ex;
+        }
     }
 }
