@@ -1,12 +1,10 @@
 package com.mukesh.fxservice.service;
 
-import com.mukesh.fxservice.repository.ExchangeRateRepository;
+import com.mukesh.fxservice.config.CurrencyProperties;
 import com.mukesh.fxservice.external.BundesbankClient;
+import com.mukesh.fxservice.repository.ExchangeRateRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -15,13 +13,14 @@ class ExchangeRateServiceTest {
     private ExchangeRateRepository repository;
     private BundesbankClient client;
     private ExchangeRateService service;
-    private  ExchangeRateLoaderService loader;
-
+    private ExchangeRateLoaderService loader;
+    CurrencyProperties currencyProperties;
     @BeforeEach
     void setup() {
         repository = mock(ExchangeRateRepository.class);
         client = mock(BundesbankClient.class);
-        service = new ExchangeRateService(client, repository,loader);
+        currencyProperties=mock(CurrencyProperties.class);
+        service = new ExchangeRateService(repository, loader,currencyProperties);
     }
 
     @Test
@@ -32,7 +31,8 @@ class ExchangeRateServiceTest {
 
         try {
             service.fetchAndStoreRates("USD");
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         verify(client, times(1))
                 .fetchExchangeRatesCsv("USD");

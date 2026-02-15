@@ -30,7 +30,8 @@ public class ExchangeRate {
     @Column(name = "rate_date", nullable = false)
     private LocalDate rateDate;
 
-    protected ExchangeRate() {}
+    protected ExchangeRate() {
+    }
 
     public ExchangeRate(String currency, BigDecimal rate, LocalDate rateDate) {
         this.currency = currency.toUpperCase();
@@ -38,8 +39,19 @@ public class ExchangeRate {
         this.rateDate = rateDate;
     }
 
-    public Long getId() { return id; }
-    public String getCurrency() { return currency; }
-    public BigDecimal getRate() { return rate; }
-    public LocalDate getRateDate() { return rateDate; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public LocalDate getRateDate() {
+        return rateDate;
+    }
 }

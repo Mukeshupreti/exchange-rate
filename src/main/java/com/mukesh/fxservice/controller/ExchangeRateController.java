@@ -1,15 +1,22 @@
 package com.mukesh.fxservice.controller;
 
-import com.mukesh.fxservice.domain.ExchangeRate;
 import com.mukesh.fxservice.dto.ConversionResponse;
+import com.mukesh.fxservice.dto.ExchangeRateResponse;
 import com.mukesh.fxservice.service.ExchangeRateService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,24 +33,25 @@ public class ExchangeRateController {
         this.service = service;
     }
 
-    // 1️⃣ List currencies
+    // List currencies
     @GetMapping("/currencies")
     public List<String> getCurrencies() {
         return service.getAvailableCurrencies();
     }
 
-    // 2️⃣ All rates or by date
+    // All rates or by date
     @GetMapping("/rates")
-    public List<ExchangeRate> getRates(
+    public Page<ExchangeRateResponse> getRates(
+            @PageableDefault(size = 50) Pageable pageable,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date) {
 
         if (date == null) {
-            return service.getRatesByDate(LocalDate.now());
+            return service.getAllRates(pageable);
         }
 
-        return service.getRatesByDate(date);
+        return service.getRatesByDate(date,pageable);
     }
 
     // 3️⃣ Conversion

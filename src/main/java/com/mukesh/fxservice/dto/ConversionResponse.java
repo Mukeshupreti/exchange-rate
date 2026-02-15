@@ -10,4 +10,5 @@ public record ConversionResponse(
         BigDecimal convertedAmount,
         LocalDate rateDate,
         boolean fallbackUsed
-) {}
+) {
+}
