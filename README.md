@@ -104,6 +104,7 @@ This ensures production readiness and prevents data staleness.
 - Fallback to latest available rate
 - Global exception handling
 - Validation at API level
+- Bulkhead for external calls
 
 ------------------------------------------------------------------------
 

@@ -22,6 +22,18 @@ class GlobalExceptionHandlerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Test
+    void bulkheadMappedTo429() throws Exception {
+        mockMvc.perform(get("/throw/bulkhead").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isTooManyRequests());
+    }
+
+    @Test
+    void circuitMappedTo503() throws Exception {
+        mockMvc.perform(get("/throw/circuit").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isServiceUnavailable());
+    }
+
     @RestController
     static class TestController {
         @GetMapping("/throw/bulkhead")
@@ -35,17 +47,5 @@ class GlobalExceptionHandlerTest {
             CallNotPermittedException ex = mock(CallNotPermittedException.class);
             throw ex;
         }
-    }
-
-    @Test
-    void bulkheadMappedTo429() throws Exception {
-        mockMvc.perform(get("/throw/bulkhead").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isTooManyRequests());
-    }
-
-    @Test
-    void circuitMappedTo503() throws Exception {
-        mockMvc.perform(get("/throw/circuit").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isServiceUnavailable());
     }
 }

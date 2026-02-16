@@ -82,13 +82,11 @@ public class ExchangeRateService {
 
     public ExchangeRate getRate(String inputCurrency, LocalDate date) {
         String currency = inputCurrency.toUpperCase().trim();
-        // 1️⃣ Try exact match in DB
         return exchangeRateRepository
                 .findByCurrencyAndRateDate(currency, date)
                 .orElseGet(() -> {
 
                     try {
-                        // 2️⃣ Try refresh from Bundesbank
                         fetchAndStoreRates(currency);
 
                         return exchangeRateRepository
@@ -96,7 +94,6 @@ public class ExchangeRateService {
                                 .orElseThrow();
                     } catch (Exception ex) {
 
-                        // 3️⃣ Fallback to latest available rate
                         return exchangeRateRepository
                                 .findTopByCurrencyAndRateDateLessThanEqualOrderByRateDateDesc(
                                         currency, date)

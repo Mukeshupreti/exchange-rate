@@ -20,6 +20,18 @@ class GlobalExceptionHandlerExtendedTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Test
+    void missingParam_returnsBadRequest() throws Exception {
+        mockMvc.perform(get("/validate").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void runtimeException_returnsInternalServerError() throws Exception {
+        mockMvc.perform(get("/throw/runtime").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+    }
+
     @RestController
     static class TestController {
 
@@ -32,18 +44,6 @@ class GlobalExceptionHandlerExtendedTest {
         public void runtime() {
             throw new RuntimeException("boom");
         }
-    }
-
-    @Test
-    void missingParam_returnsBadRequest() throws Exception {
-        mockMvc.perform(get("/validate").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void runtimeException_returnsInternalServerError() throws Exception {
-        mockMvc.perform(get("/throw/runtime").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
     }
 }
 

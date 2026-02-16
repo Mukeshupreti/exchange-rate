@@ -22,6 +22,6 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
             LocalDate rateDate
     );
 
-       List<ExchangeRate> findByCurrencyAndRateDateIn(String currency, Collection<LocalDate> rateDates);
+    List<ExchangeRate> findByCurrencyAndRateDateIn(String currency, Collection<LocalDate> rateDates);
 
 }

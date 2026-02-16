@@ -73,7 +73,6 @@ public class ExchangeRateLoaderService {
 
     @Transactional
     private List<ExchangeRate> saveUniqueRates(String currency, List<ExchangeRate> parsed) {
-        // deduplicate: find existing rates in DB for the parsed dates
         Set<LocalDate> parsedDates = parsed.stream()
                 .map(ExchangeRate::getRateDate)
                 .collect(Collectors.toSet());
@@ -97,9 +96,7 @@ public class ExchangeRateLoaderService {
             repository.saveAll(toSave);
             log.info("Saved {} new rates for currency {}", toSave.size(), currency);
         } catch (DataIntegrityViolationException dive) {
-            // Last-resort: unique constraint might have been violated concurrently
             log.warn("DataIntegrityViolation while saving rates for {}. Some rows may already exist. Error: {}", currency, dive.getMessage());
-            // swallow to keep operation idempotent
         }
 
         return toSave;
@@ -111,12 +108,10 @@ public class ExchangeRateLoaderService {
 
         try {
 
-            // Remove UTF-8 BOM if present
             if (csvData.startsWith("\uFEFF")) {
                 csvData = csvData.substring(1);
             }
 
-            // Detect delimiter (comma or semicolon) by checking first few lines
             char delimiter = ',';
             String firstLine = csvData.split("\r?\n", 2)[0];
             if (firstLine.contains(";")) {
@@ -135,7 +130,6 @@ public class ExchangeRateLoaderService {
 
                 long recordNumber = record.getRecordNumber();
 
-                // Skip header or invalid rows
                 if (record.size() < 2) {
                     log.debug("Skipping short/malformed CSV row #{}: {}", recordNumber, record);
                     continue;
@@ -144,21 +138,17 @@ public class ExchangeRateLoaderService {
                 String dateStr = record.get(0).trim();
                 String rateStr = record.get(1).trim();
 
-                // Skip header line
                 if (dateStr.equalsIgnoreCase("TIME_PERIOD") || dateStr.isBlank()) {
-                    // header or blank
                     log.debug("Skipping header/blank CSV row #{}", recordNumber);
                     continue;
                 }
 
-                // Skip missing values
                 if (rateStr.equals(".") || rateStr.isBlank()) {
                     log.debug("Skipping missing rate value CSV row #{}: {}", recordNumber, record);
                     continue;
                 }
 
                 try {
-                    // Handle European decimal commas and non-breaking spaces
                     rateStr = rateStr.replace("\u00A0", "").replace(',', '.');
 
                     LocalDate date = LocalDate.parse(dateStr);
@@ -167,7 +157,6 @@ public class ExchangeRateLoaderService {
                     rates.add(new ExchangeRate(currency, rate, date));
 
                 } catch (Exception e) {
-                    // Log malformed row and continue
                     log.warn("Skipping malformed CSV row #{} due to parse error: {} - {}", recordNumber, record, e.getMessage());
                 }
             }
