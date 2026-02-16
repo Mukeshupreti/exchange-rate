@@ -2,7 +2,6 @@ package com.mukesh.fxservice.service;
 
 import com.mukesh.fxservice.domain.ExchangeRate;
 import com.mukesh.fxservice.dto.ConversionResponse;
-import com.mukesh.fxservice.exception.RateNotFoundException;
 import com.mukesh.fxservice.repository.ExchangeRateRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +34,6 @@ class ExchangeRateServiceUnitTest {
 
         ConversionResponse resp = service.convert("USD", BigDecimal.valueOf(10), LocalDate.parse("2024-01-01"));
 
-        // amount 10 / rate 2 = 5
         assertThat(resp.convertedAmount()).isEqualByComparingTo(new BigDecimal("5.000000"));
     }
 

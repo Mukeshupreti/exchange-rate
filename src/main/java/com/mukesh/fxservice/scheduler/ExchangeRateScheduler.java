@@ -1,6 +1,5 @@
 package com.mukesh.fxservice.scheduler;
 
-import com.mukesh.fxservice.config.CurrencyProperties;
 import com.mukesh.fxservice.service.ExchangeRateLoaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -17,11 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -48,12 +44,10 @@ public class ExchangeRateLoaderServiceConcurrencyTest {
     void concurrentFetches_doNotProduceDuplicateSaves() throws InterruptedException {
         String csv = "TIME_PERIOD,OBS_VALUE\n2023-01-01,1.1\n2023-01-02,1.2\n2023-01-03,1.3\n";
         when(client.fetchExchangeRatesCsv("USD")).thenAnswer(invocation -> {
-            // small delay to increase chance of concurrent entry
             Thread.sleep(100);
             return csv;
         });
 
-        // simulate a small in-memory DB state for repository
         Set<LocalDate> existingDates = ConcurrentHashMap.newKeySet();
 
         when(repository.findByCurrencyAndRateDateIn(eq("USD"), any())).thenAnswer((Answer<List<ExchangeRate>>) invocation -> {

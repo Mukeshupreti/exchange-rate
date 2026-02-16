@@ -1,7 +1,6 @@
 package com.mukesh.fxservice.exception;
 
 import com.mukesh.fxservice.dto.ErrorResponse;
-import com.mukesh.fxservice.scheduler.ExchangeRateScheduler;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import jakarta.servlet.http.HttpServletRequest;

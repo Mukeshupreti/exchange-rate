@@ -1,6 +1,5 @@
 package com.mukesh.fxservice.service;
 
-import com.mukesh.fxservice.domain.ExchangeRate;
 import com.mukesh.fxservice.external.BundesbankClient;
 import com.mukesh.fxservice.repository.ExchangeRateRepository;
 import org.junit.jupiter.api.Test;
@@ -8,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

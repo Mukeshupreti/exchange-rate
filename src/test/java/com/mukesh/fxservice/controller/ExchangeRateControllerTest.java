@@ -26,9 +26,6 @@ class ExchangeRateControllerTest {
     @MockBean
     private ExchangeRateService service;
 
-    // ==============================
-    // SUCCESS TEST
-    // ==============================
     @Test
     void shouldConvertCurrencySuccessfully() throws Exception {
 
@@ -59,9 +56,6 @@ class ExchangeRateControllerTest {
                 .andExpect(jsonPath("$.fallbackUsed").value(false));
     }
 
-    // ==============================
-    // VALIDATION TESTS
-    // ==============================
 
     @Test
     void shouldReturnBadRequestForInvalidAmount() throws Exception {
@@ -91,10 +85,6 @@ class ExchangeRateControllerTest {
                         .param("amount", "100"))
                 .andExpect(status().isBadRequest());
     }
-
-    // ==============================
-    // BUSINESS ERROR TEST
-    // ==============================
 
     @Test
     void shouldReturnNotFoundWhenRateMissing() throws Exception {

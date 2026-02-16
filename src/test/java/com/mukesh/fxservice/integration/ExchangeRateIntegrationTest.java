@@ -37,9 +37,7 @@ class ExchangeRateIntegrationTest {
                 .thenReturn(mockCsv);
     }
 
-    // =========================================
-    // 1️⃣ Test Lazy Load + Convert
-    // =========================================
+
     @Test
     void shouldLoadRatesAndConvertSuccessfully() throws Exception {
 
@@ -53,9 +51,7 @@ class ExchangeRateIntegrationTest {
                 .andExpect(jsonPath("$.rateDate").value("2024-01-10"));
     }
 
-    // =========================================
-    // 2️⃣ Test Get Rates By Date
-    // =========================================
+
     @Test
     void shouldReturnRatesByDate() throws Exception {
 
@@ -67,9 +63,6 @@ class ExchangeRateIntegrationTest {
     }
 
 
-    // =========================================
-    // 3️⃣ Test Validation
-    // =========================================
     @Test
     void shouldReturnBadRequestForInvalidCurrency() throws Exception {
 

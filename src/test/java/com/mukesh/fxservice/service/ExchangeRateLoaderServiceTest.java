@@ -39,7 +39,6 @@ public class ExchangeRateLoaderServiceTest {
         String csv = "TIME_PERIOD,OBS_VALUE\n2023-01-01,1.1\n2023-01-02,1.2\n2023-01-03,1.3\n";
         when(client.fetchExchangeRatesCsv("USD")).thenReturn(csv);
 
-        // Simulate repository already has one of the dates
         when(repository.findByCurrencyAndRateDateIn(eq("USD"), any()))
                 .thenReturn(List.of(new ExchangeRate("USD", BigDecimal.valueOf(1.1), LocalDate.parse("2023-01-01"))));
 
