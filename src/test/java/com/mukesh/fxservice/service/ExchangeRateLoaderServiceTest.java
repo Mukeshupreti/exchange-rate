@@ -1,12 +1,12 @@
 package com.mukesh.fxservice.service;
 
-import com.mukesh.fxservice.config.CurrencyProperties;
 import com.mukesh.fxservice.domain.ExchangeRate;
 import com.mukesh.fxservice.external.BundesbankClient;
 import com.mukesh.fxservice.repository.ExchangeRateRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -26,15 +26,12 @@ public class ExchangeRateLoaderServiceTest {
     @MockBean
     private BundesbankClient client;
 
-    private CurrencyProperties properties;
-
+    @Autowired
     private ExchangeRateLoaderService loader;
 
     @BeforeEach
     void setup() {
-        properties = new CurrencyProperties();
-        properties.setSupportedCurrencies(List.of("USD"));
-        loader = new ExchangeRateLoaderService(repository, client, properties);
+        // Spring will provide loader with mocked beans
     }
 
     @Test
@@ -57,4 +54,3 @@ public class ExchangeRateLoaderServiceTest {
                 .contains(LocalDate.parse("2023-01-02"), LocalDate.parse("2023-01-03"));
     }
 }
-

@@ -1,6 +1,5 @@
 package com.mukesh.fxservice.external;
 
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,6 @@ public class BundesbankClient {
         this.formatSuffix = formatSuffix;
     }
 
-    @RateLimiter(name = "bundesbank")
     @Retry(name = "bundesbank")
     public String fetchExchangeRatesCsv(String currency) {
 

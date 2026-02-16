@@ -7,7 +7,6 @@ import com.mukesh.fxservice.dto.ExchangeRateResponse;
 import com.mukesh.fxservice.exception.RateNotFoundException;
 import com.mukesh.fxservice.repository.ExchangeRateRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -37,7 +36,6 @@ public class ExchangeRateService {
     }
 
     @CircuitBreaker(name = "bundesbank", fallbackMethod = "fallbackRates")
-    @Retry(name = "bundesbank")
     public List<ExchangeRate> fetchAndStoreRates(String currency) {
         log.info("Fetching exchange rates from Bundesbank | currency={}", currency);
         currency = currency.toUpperCase().trim();
