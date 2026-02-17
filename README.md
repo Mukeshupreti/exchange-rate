@@ -34,9 +34,16 @@ mvn spring-boot:run
 
 Base URL:
 
-```
-http://localhost:8080/exchange-rate-service
-```
+- http://localhost:8080/exchange-rate-service
+
+Swagger UI:
+
+- http://localhost:8080/exchange-rate-service/swagger-ui.html
+
+Actuator:
+
+- http://localhost:8080/exchange-rate-service/actuator/health
+- http://localhost:8080/exchange-rate-service/actuator/metrics
 
 ------------------------------------------------------------------------
 

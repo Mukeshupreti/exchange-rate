@@ -16,12 +16,6 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
 
     Page<ExchangeRate> findByRateDate(LocalDate rateDate, Pageable pageable);
 
-    Optional<ExchangeRate>
-    findTopByCurrencyAndRateDateLessThanEqualOrderByRateDateDesc(
-            String currency,
-            LocalDate rateDate
-    );
-
     List<ExchangeRate> findByCurrencyAndRateDateIn(String currency, Collection<LocalDate> rateDates);
 
 }

@@ -1,6 +1,8 @@
 package com.mukesh.fxservice.integration;
 
 import com.mukesh.fxservice.external.impl.BundesbankClient;
+import com.mukesh.fxservice.domain.ExchangeRate;
+import com.mukesh.fxservice.repository.ExchangeRateRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,20 +26,24 @@ class ExchangeRateIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ExchangeRateRepository repository;
+
     @MockBean
     private BundesbankClient bundesbankClient;
 
-    private String mockCsv;
-
     @BeforeEach
     void setup() {
-        mockCsv = """
+        String mockCsv = """
                 2024-01-09,1.100000,
                 2024-01-10,1.200000,
                 """;
 
         when(bundesbankClient.fetchExchangeRatesCsv("USD"))
                 .thenReturn(mockCsv);
+
+        repository.deleteAll();
+        repository.save(new ExchangeRate("USD", new BigDecimal("1.200000"), LocalDate.parse("2024-01-10")));
     }
 
 

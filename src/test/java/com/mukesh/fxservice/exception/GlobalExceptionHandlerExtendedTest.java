@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.mukesh.fxservice.exception.ExchangeRateParseException;
-
 @WebMvcTest
 @ContextConfiguration(classes = {GlobalExceptionHandlerExtendedTest.TestController.class, GlobalExceptionHandler.class})
 class GlobalExceptionHandlerExtendedTest {
@@ -45,7 +43,7 @@ class GlobalExceptionHandlerExtendedTest {
 
         @GetMapping("/validate")
         public void validate(@RequestParam("param") String param) {
-            // just a simple endpoint that requires a param
+            param.length();
         }
 
         @GetMapping("/throw/runtime")

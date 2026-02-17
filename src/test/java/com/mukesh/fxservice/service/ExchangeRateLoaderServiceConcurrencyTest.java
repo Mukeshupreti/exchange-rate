@@ -4,7 +4,6 @@ import com.mukesh.fxservice.domain.ExchangeRate;
 import com.mukesh.fxservice.external.impl.BundesbankClient;
 import com.mukesh.fxservice.repository.ExchangeRateRepository;
 import com.mukesh.fxservice.service.impl.ExchangeRateLoaderService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -18,7 +17,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,11 +39,6 @@ public class ExchangeRateLoaderServiceConcurrencyTest {
 
     @Autowired
     private ExchangeRateLoaderService loader;
-
-    @BeforeEach
-    void setup() {
-        // Spring will provide loader with mocked beans
-    }
 
     @Test
     void concurrentFetches_doNotProduceDuplicateSaves() throws InterruptedException {
@@ -64,7 +62,6 @@ public class ExchangeRateLoaderServiceConcurrencyTest {
         });
 
         doAnswer((InvocationOnMock inv) -> {
-            @SuppressWarnings("unchecked")
             List<ExchangeRate> saved = inv.getArgument(0);
             for (ExchangeRate r : saved) {
                 existingDates.add(r.getRateDate());
@@ -72,31 +69,28 @@ public class ExchangeRateLoaderServiceConcurrencyTest {
             return null;
         }).when(repository).saveAll(any());
 
-        // Run N concurrent callers
         int threads = 10;
-        ExecutorService ex = Executors.newFixedThreadPool(threads);
         CountDownLatch start = new CountDownLatch(1);
         CountDownLatch done = new CountDownLatch(threads);
+        try (ExecutorService ex = Executors.newFixedThreadPool(threads)) {
+            for (int i = 0; i < threads; i++) {
+                ex.submit(() -> {
+                    try {
+                        start.await();
+                        loader.fetchAndLoadRatesForCurrency("USD");
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } finally {
+                        done.countDown();
+                    }
+                });
+            }
 
-        for (int i = 0; i < threads; i++) {
-            ex.submit(() -> {
-                try {
-                    start.await();
-                    loader.fetchAndLoadRatesForCurrency("USD");
-                } catch (Exception e) {
-                    // ignore
-                } finally {
-                    done.countDown();
-                }
-            });
+            start.countDown();
+            boolean finished = done.await(15, TimeUnit.SECONDS);
+            assertThat(finished).isTrue();
         }
 
-        // start threads
-        start.countDown();
-        boolean finished = done.await(15, TimeUnit.SECONDS);
-        ex.shutdownNow();
-
-        // without bulkhead, saveAll may be called multiple times
         verify(repository, atLeast(1)).saveAll(any());
         assertThat(existingDates).hasSize(3);
     }
