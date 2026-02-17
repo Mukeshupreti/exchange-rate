@@ -1,6 +1,6 @@
 package com.mukesh.fxservice.scheduler;
 
-import com.mukesh.fxservice.service.ExchangeRateLoaderService;
+import com.mukesh.fxservice.service.api.ExchangeRateLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,9 +12,9 @@ public class ExchangeRateScheduler {
     private static final Logger log =
             LoggerFactory.getLogger(ExchangeRateScheduler.class);
 
-    private final ExchangeRateLoaderService loader;
+    private final ExchangeRateLoader loader;
 
-    public ExchangeRateScheduler(ExchangeRateLoaderService loader) {
+    public ExchangeRateScheduler(ExchangeRateLoader loader) {
         this.loader = loader;
     }
 
@@ -22,7 +22,7 @@ public class ExchangeRateScheduler {
     public void refreshRates() {
 
         log.info("Starting scheduled FX refresh");
-        loader.loadAllSupportedCurrencies();
+        loader.fetchAndLoadAllCurrencyRates();
         log.info("Completed scheduled FX refresh");
     }
 }

@@ -1,8 +1,6 @@
 package com.mukesh.fxservice.exception;
 
 import com.mukesh.fxservice.dto.ErrorResponse;
-import io.github.resilience4j.bulkhead.BulkheadFullException;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -118,39 +116,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(BulkheadFullException.class)
-    public ResponseEntity<ErrorResponse> handleBulkheadFull(
-            BulkheadFullException ex,
-            HttpServletRequest request) {
-
-        ErrorResponse error = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.TOO_MANY_REQUESTS.value(),
-                "Service Busy",
-                "Too many concurrent requests for this currency. Please try again later.",
-                request.getRequestURI()
-        );
-
-        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(error);
-    }
-
-
-    @ExceptionHandler(CallNotPermittedException.class)
-    public ResponseEntity<ErrorResponse> handleCircuitOpen(
-            CallNotPermittedException ex,
-            HttpServletRequest request) {
-
-        ErrorResponse error = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.SERVICE_UNAVAILABLE.value(),
-                "Service Unavailable",
-                "External service currently unavailable. Please try again later.",
-                request.getRequestURI()
-        );
-
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
-    }
-
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<ErrorResponse> handleRestClientException(
             RestClientException ex,
@@ -163,6 +128,24 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_GATEWAY.value(),
                 "Downstream Service Error",
                 "Failed to communicate with external FX provider",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(error);
+    }
+
+    @ExceptionHandler(ExchangeRateParseException.class)
+    public ResponseEntity<ErrorResponse> handleParseException(
+            ExchangeRateParseException ex,
+            HttpServletRequest request) {
+
+        log.error("Failed to parse exchange rate data", ex);
+
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_GATEWAY.value(),
+                "Downstream Data Error",
+                "Failed to parse external FX provider data",
                 request.getRequestURI()
         );
 

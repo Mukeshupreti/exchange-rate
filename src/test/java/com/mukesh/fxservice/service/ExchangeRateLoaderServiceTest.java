@@ -1,8 +1,9 @@
 package com.mukesh.fxservice.service;
 
 import com.mukesh.fxservice.domain.ExchangeRate;
-import com.mukesh.fxservice.external.BundesbankClient;
+import com.mukesh.fxservice.external.impl.BundesbankClient;
 import com.mukesh.fxservice.repository.ExchangeRateRepository;
+import com.mukesh.fxservice.service.impl.ExchangeRateLoaderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -42,7 +43,7 @@ public class ExchangeRateLoaderServiceTest {
         when(repository.findByCurrencyAndRateDateIn(eq("USD"), any()))
                 .thenReturn(List.of(new ExchangeRate("USD", BigDecimal.valueOf(1.1), LocalDate.parse("2023-01-01"))));
 
-        loader.fetchAndStoreRates("USD");
+        loader.fetchAndLoadRatesForCurrency("USD");
 
         ArgumentCaptor<List<ExchangeRate>> captor = ArgumentCaptor.forClass(List.class);
         verify(repository, times(1)).saveAll(captor.capture());

@@ -1,6 +1,6 @@
 package com.mukesh.fxservice.integration;
 
-import com.mukesh.fxservice.external.BundesbankClient;
+import com.mukesh.fxservice.external.impl.BundesbankClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ class ExchangeRateIntegrationTest {
         mockMvc.perform(get("/api/rates")
                         .param("date", "2024-01-10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[*].currency")
+                .andExpect(jsonPath("$[*].currency")
                         .value(org.hamcrest.Matchers.hasItem("USD")));
     }
 

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.mukesh.fxservice.exception.ExchangeRateParseException;
+
 @WebMvcTest
 @ContextConfiguration(classes = {GlobalExceptionHandlerExtendedTest.TestController.class, GlobalExceptionHandler.class})
 class GlobalExceptionHandlerExtendedTest {
@@ -32,6 +34,12 @@ class GlobalExceptionHandlerExtendedTest {
                 .andExpect(status().isInternalServerError());
     }
 
+    @Test
+    void parseException_returnsBadGateway() throws Exception {
+        mockMvc.perform(get("/throw/parse").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadGateway());
+    }
+
     @RestController
     static class TestController {
 
@@ -44,6 +52,10 @@ class GlobalExceptionHandlerExtendedTest {
         public void runtime() {
             throw new RuntimeException("boom");
         }
+
+        @GetMapping("/throw/parse")
+        public void parse() {
+            throw new ExchangeRateParseException("bad csv", new IllegalArgumentException("invalid"));
+        }
     }
 }
-

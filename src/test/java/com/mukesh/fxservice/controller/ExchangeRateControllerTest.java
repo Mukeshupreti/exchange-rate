@@ -34,8 +34,7 @@ class ExchangeRateControllerTest {
                 new BigDecimal("100"),
                 new BigDecimal("1.100000"),
                 new BigDecimal("90.909091"),
-                LocalDate.parse("2024-01-10"),
-                false
+                LocalDate.parse("2024-01-10")
         );
 
         when(service.convert(
@@ -52,8 +51,7 @@ class ExchangeRateControllerTest {
                 .andExpect(jsonPath("$.currency").value("USD"))
                 .andExpect(jsonPath("$.amount").value(100))
                 .andExpect(jsonPath("$.rate").value(1.100000))
-                .andExpect(jsonPath("$.convertedAmount").value(90.909091))
-                .andExpect(jsonPath("$.fallbackUsed").value(false));
+                .andExpect(jsonPath("$.convertedAmount").value(90.909091));
     }
 
 

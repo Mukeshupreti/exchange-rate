@@ -1,5 +1,6 @@
 package com.mukesh.fxservice.external;
 
+import com.mukesh.fxservice.external.impl.BundesbankClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -53,4 +54,3 @@ class BundesbankClientTest {
         verify(restTemplate, times(1)).getForObject(expectedUrl, String.class);
     }
 }
-

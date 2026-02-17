@@ -8,7 +8,6 @@ public record ConversionResponse(
         BigDecimal amount,
         BigDecimal rate,
         BigDecimal convertedAmount,
-        LocalDate rateDate,
-        boolean fallbackUsed
+        LocalDate rateDate
 ) {
 }

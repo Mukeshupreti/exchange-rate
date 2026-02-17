@@ -1,6 +1,6 @@
 package com.mukesh.fxservice.scheduler;
 
-import com.mukesh.fxservice.service.ExchangeRateLoaderService;
+import com.mukesh.fxservice.service.api.ExchangeRateLoader;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;
@@ -10,12 +10,11 @@ class ExchangeRateSchedulerTest {
 
     @Test
     void refreshRates_invokesLoader() {
-        ExchangeRateLoaderService loader = mock(ExchangeRateLoaderService.class);
+        ExchangeRateLoader loader = mock(ExchangeRateLoader.class);
         ExchangeRateScheduler scheduler = new ExchangeRateScheduler(loader);
 
         scheduler.refreshRates();
 
-        verify(loader).loadAllSupportedCurrencies();
+        verify(loader).fetchAndLoadAllCurrencyRates();
     }
 }
-

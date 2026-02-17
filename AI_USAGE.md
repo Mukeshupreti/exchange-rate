@@ -2,7 +2,7 @@
 
 ChatGPT was used as a supplementary development aid during this code
 challenge.\
-It supported architectural validation, best practices discussion, and
+It supported architectural validation, design discussions, and
 debugging guidance.\
 All core implementation, business logic, API design, and final decisions
 were written and reviewed manually.
@@ -11,37 +11,34 @@ were written and reviewed manually.
 
 ## Key Prompts / Questions Asked
 
-- How to design a resilient exchange rate microservice (DB + external
-  provider)
-- Best practices for Circuit Breaker and Retry in Spring Boot 3
-- How to structure pagination and DTO mapping properly
-- How to handle validation and global exception handling
+- How to structure interfaces vs implementations and keep SOLID
+- How to handle pagination responses and validation
+- How to map errors consistently in a Spring Boot API
+- How to avoid slow reads by removing refresh calls from read endpoints
+- How to write targeted tests for parsing and persistence edge cases
+- How to apply the application context path globally and update URLs
+- How to fix Mockito inline mock maker issues on JDK 21
+- How to split services by responsibility and remove unused dependencies
 
 ------------------------------------------------------------------------
 
 ## Relevant AI Guidance
 
-AI helped validate:
+- DB-only reads with scheduled refresh
+- DTO vs raw Page response tradeoffs
+- Consistent error handling strategy
+- Unit test ideas for parser, persister, and exception handler coverage
 
-- DB-first strategy with external fallback
-- Use of Resilience4j for fault tolerance
-- Pageable for large dataset handling
-- Structured error handling approach
+Key decisions:
+- Remove lazy-loading from read endpoints to keep latency predictable (accepted).
+- Remove Resilience4j from read paths after switching to DB-only reads (accepted).
+- Return list-only output for pagination in this challenge (modified).
 
 ------------------------------------------------------------------------
 
 ## Decision Ownership
 
-All AI suggestions were reviewed critically.
-
-- Architectural decisions were manually validated
-- Business logic was implemented independently
-- Some suggestions were modified to better fit the requirements
-- No code was blindly copied without understanding
-
-AI was used as a productivity and validation assistant --- not as an
-automated code generator.
+- All AI suggestions were reviewed and manually applied.
+- No code was blindly copied without understanding.
 
 ------------------------------------------------------------------------
-
-

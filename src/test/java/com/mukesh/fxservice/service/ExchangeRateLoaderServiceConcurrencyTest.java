@@ -1,8 +1,9 @@
 package com.mukesh.fxservice.service;
 
 import com.mukesh.fxservice.domain.ExchangeRate;
-import com.mukesh.fxservice.external.BundesbankClient;
+import com.mukesh.fxservice.external.impl.BundesbankClient;
 import com.mukesh.fxservice.repository.ExchangeRateRepository;
+import com.mukesh.fxservice.service.impl.ExchangeRateLoaderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -80,7 +82,7 @@ public class ExchangeRateLoaderServiceConcurrencyTest {
             ex.submit(() -> {
                 try {
                     start.await();
-                    loader.fetchAndStoreRates("USD");
+                    loader.fetchAndLoadRatesForCurrency("USD");
                 } catch (Exception e) {
                     // ignore
                 } finally {
@@ -94,7 +96,8 @@ public class ExchangeRateLoaderServiceConcurrencyTest {
         boolean finished = done.await(15, TimeUnit.SECONDS);
         ex.shutdownNow();
 
-        // verify saveAll called at most once (since lock serializes and DB prevents duplicates)
-        verify(repository, atMost(1)).saveAll(any());
+        // without bulkhead, saveAll may be called multiple times
+        verify(repository, atLeast(1)).saveAll(any());
+        assertThat(existingDates).hasSize(3);
     }
 }

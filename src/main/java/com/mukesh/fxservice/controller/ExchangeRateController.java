@@ -7,9 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
-import org.springframework.data.domain.Page;
+import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,17 +38,24 @@ public class ExchangeRateController {
     }
 
     @GetMapping("/rates")
-    public Page<ExchangeRateResponse> getRates(
-            @PageableDefault(size = 50) Pageable pageable,
+    public List<ExchangeRateResponse> getRates(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-            LocalDate date) {
+            LocalDate date,
+            @RequestParam(defaultValue = "0")
+            @Min(value = 0, message = "Page index must be 0 or greater")
+            int page,
+            @RequestParam(defaultValue = "50")
+            @Min(value = 1, message = "Page size must be 1 or greater")
+            int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         if (date == null) {
-            return service.getAllRates(pageable);
+            return service.getAllRates(pageable).getContent();
         }
 
-        return service.getRatesByDate(date, pageable);
+        return service.getRatesByDate(date, pageable).getContent();
     }
 
     @GetMapping("/conversions")
