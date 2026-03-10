@@ -36,7 +36,7 @@ public class ExchangeRateController {
     public List<String> getCurrencies() {
         return service.getAvailableCurrencies();
     }
-
+    //FIXME : pagination user can request allowing arbitrary page size. huge load on DB
     @GetMapping("/rates")
     public List<ExchangeRateResponse> getRates(
             @RequestParam(required = false)

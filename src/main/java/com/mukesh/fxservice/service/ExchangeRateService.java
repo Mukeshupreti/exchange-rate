@@ -46,6 +46,7 @@ public class ExchangeRateService {
         String currency = inputCurrency.toUpperCase().trim();
         return exchangeRateRepository
                 .findByCurrencyAndRateDate(currency, date)
+                //FIXME : on weekend Fallback to previous buisness day.
                 .orElseThrow(() ->
                         new RateNotFoundException("No exchange rate data available for date: " + date));
     }
